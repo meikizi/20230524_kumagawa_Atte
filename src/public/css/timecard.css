@@ -1,0 +1,45 @@
+* {
+    font-weight: bold;
+}
+
+.timecard__container {
+    max-width: 1230px;
+    height: calc(100vh - 80px - 40px);
+    margin: 0 auto;
+    padding-top: 48px;
+    font-size: 20px;
+    background: #eee;
+}
+
+.timecard__message {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.timecard__inner {
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+}
+
+.timecard__inner:nth-child(2) {
+    margin-bottom: 32px;
+}
+
+.timecard__button {
+    width: 100%;
+}
+
+.timecard__button:nth-child(odd) {
+    margin-right: 32px;
+}
+
+.timecard__submit {
+    width: 100%;
+    height: 180px;
+    border-radius: 4px;
+    background: #fff;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}

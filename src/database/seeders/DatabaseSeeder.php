@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Attendance;
+use App\Models\Rest;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        User::factory(10)->create();
+        Attendance::factory(10)->create();
+        Rest::factory(10)->create();
     }
 }

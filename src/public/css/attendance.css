@@ -1,0 +1,82 @@
+.database {
+    max-width: 1230px;
+    width: 100%;
+    height: calc(100vh - 80px - 40px);
+    margin: 0 auto;
+    padding-top: 48px;
+    font-size: 20px;
+    background: #eee;
+}
+
+.database_date {
+    text-align: center;
+    margin-bottom: 48px;
+    font-weight: bold;
+    position: relative;
+}
+
+svg.w-5.h-5 {
+    width: 24px;
+    height: 24px;
+    transform: scaleX(1.5);
+    color: rgb(80, 80, 251);
+    background: #fff;
+    border: 1px solid rgb(80, 80, 251);
+}
+
+.previous {
+    position: absolute;
+    top: 0;
+    left: 40%;
+}
+
+
+.next {
+    position: absolute;
+    top: 0;
+    left: 58%;
+}
+
+.pg {
+    display: inline-block;
+}
+
+.pagination {
+    display: flex;
+    list-style-type: none;
+}
+
+.page-item {
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    text-align: center;
+    background: #fff;
+}
+
+.page-link {
+    color: rgb(110, 160, 230);
+}
+
+.database__content {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.database__header {
+    display: flex;
+    padding: 20px 32px;
+    border-top: 1px solid #000;
+}
+
+.database__p {
+    width: 20%;
+    font-weight: bold;
+}
+
+.database__data {
+    display: flex;
+    padding: 20px 32px;
+    font-size: 16px;
+    border-top: 1px solid #000;
+}

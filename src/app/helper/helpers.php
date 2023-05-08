@@ -45,7 +45,8 @@ if (!function_exists('searchAttendance')) {
                     'id_list_att' => $id_list_att[$i],
                     'name' => $name,
                     'start_work' => $start_work->format('H:i:s'),
-                    'end_work' => $end_work, 'work_time' => $work_time
+                    'end_work' => $end_work,
+                    'work_time' => $work_time
                 ]);
                 $data_set[$i] = $individual_data;
             }
@@ -65,9 +66,9 @@ if (!function_exists('searchRest')) {
         $daily_rest = Rest::where('date', $date)->get();
         $data_set = collect([]);
         if ($daily_rest->isNotEmpty()) {
-            $id_list_rest = $daily_rest->unique('attendance_id')->pluck('attendance_id');
+            $id_list_rest = $daily_rest->unique('user_id')->pluck('user_id');
             for ($i = 0; $i < count($id_list_rest); $i++) {
-                $individual_rest = $daily_rest->where('attendance_id', $id_list_rest[$i]);
+                $individual_rest = $daily_rest->where('user_id', $id_list_rest[$i]);
                 $total_rest_secondes = 0;
                 for ($j = 0; $j < count($individual_rest); $j++) {
                     $start_rest = new Carbon($individual_rest->whereNotNull('start_rest')->pluck('start_rest')->get($j));
@@ -114,8 +115,10 @@ if (!function_exists('connectCollection')) {
                     ->where('id_list_rest', $id_list_att[$i])
                     ->first()
                     ->get('rest_time');
-                    dd($rest_time_val);
+                // // dd($rest_time_val);
+
                 $total_collection[$i] = $collectionA[$i]
+                    ->put('rest_time', $rest_time_val)
                     ->put('rest_time', $rest_time_val);
             } else {
                 $total_collection[$i] = $collectionA[$i]

@@ -6,13 +6,6 @@
 
 @section('content')
     <div class="timecard">
-        {{-- <div class="timecard__alert">
-            @if(session('message'))
-                <div class="timecard__alert--success">
-                    {{ session('message') }}
-                </div>
-            @endif
-        </div> --}}
         <div class="timecard__container">
             <div class="timecard__message">
                 <p>{{ Auth::user()->name }}さんお疲れ様です!</p>
@@ -55,6 +48,9 @@
                 <p class="error__message">{{$message}}</p>
                 @enderror
                 @error('end_work')
+                <p class="error__message">{{$message}}</p>
+                @enderror
+                @error('start_rest')
                 <p class="error__message">{{$message}}</p>
                 @enderror
                 @error('end_rest')

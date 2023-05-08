@@ -27,13 +27,4 @@ class Attendance extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Rests関連付け
-     * 1対多
-     */
-    public function Rests()
-    {
-        return $this->hasMany(Rest::class);
-    }
-
 }

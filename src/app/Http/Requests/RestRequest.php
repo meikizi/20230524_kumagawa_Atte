@@ -24,9 +24,8 @@ class RestRequest extends FormRequest
     public function rules()
     {
         return [
-            'attendance_id' => ['required', 'unique:rests'],
-            'start_rest' => ['date'],
-            'end_rest' => ['date'],
+            'user_id' => ['required', 'unique:rests'],
+            'date' => ['required', 'date'],
         ];
     }
 }

@@ -6,11 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Attendance;
-use App\Models\Rest;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\DB;
 
 class TimecardController extends Controller
 {
@@ -59,7 +57,7 @@ class TimecardController extends Controller
         $attendance = Attendance::where('user_id', $user->id)
             ->orderBy('id', 'DESC')->first();
 
-        if (!empty($attendance->end_work)) {
+        if (empty($attendance->start_work) || !empty($attendance->end_work)) {
             throw ValidationException::withMessages(['end_work' => '既に退勤の打刻がされているか、出勤打刻されていません']);
             return redirect('/');
         }
@@ -73,9 +71,6 @@ class TimecardController extends Controller
 
     public function showTable(Request $request)
     {
-        // $dates = Attendance::DateSearch($request->date)
-        //     ->paginate(1);
-
         // $attendances = Attendance::leftJoin('users', 'attendances.user_id', '=', 'users.id')
         //     ->leftJoin('rests', 'rests.attendance_id', '=', 'attendances.id')
         //     ->DateSearch($request->date)
@@ -96,7 +91,7 @@ class TimecardController extends Controller
         if ($attendance_lists) {
             $per_page = 5;
             $total_lists = connectCollection($attendance_lists, $rest_lists);
-            dd($total_lists);
+            // dd($total_lists);
             $total_lists = new LengthAwarePaginator(
                 $total_lists->forPage($request->page, $per_page),
                 count($total_lists),

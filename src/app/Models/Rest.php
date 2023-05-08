@@ -11,19 +11,19 @@ class Rest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'attendance_id',
+        'user_id',
         'date',
         'start_rest',
         'end_rest',
     ];
 
     /**
-     * Attendances関連付け
+     * ユーザー関連付け
      * 1対多
      */
-    public function Attendance()
+    public function user()
     {
-        return $this->belongsTo(Attendance::class);
+        return $this->belongsTo(User::class);
     }
 
 }

@@ -51,6 +51,15 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
+    /**
+     * Rests関連付け
+     * 1対多
+     */
+    public function Rests()
+    {
+        return $this->hasMany(Rest::class);
+    }
+
     public function scopeNameSearch($query, $name)
     {
         if (!empty($name)) {

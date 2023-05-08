@@ -6,13 +6,13 @@
 
 @section('content')
     <div class="timecard">
-        <div class="timecard__alert">
+        {{-- <div class="timecard__alert">
             @if(session('message'))
                 <div class="timecard__alert--success">
                     {{ session('message') }}
                 </div>
             @endif
-        </div>
+        </div> --}}
         <div class="timecard__container">
             <div class="timecard__message">
                 <p>{{ Auth::user()->name }}さんお疲れ様です!</p>
@@ -44,6 +44,22 @@
                         <button class="timecard__submit">休憩終了</button>
                     </form>
                 </div>
+            </div>
+            <div class="timecard__alert">
+                @if(session('message'))
+                <div class="timecard__alert--success">
+                    {{ session('message') }}
+                </div>
+                @endif
+                @error('start_work')
+                <p class="error__message">{{$message}}</p>
+                @enderror
+                @error('end_work')
+                <p class="error__message">{{$message}}</p>
+                @enderror
+                @error('end_rest')
+                <p class="error__message">{{$message}}</p>
+                @enderror
             </div>
         </div>
     </div>

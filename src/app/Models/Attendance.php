@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class Attendance extends Model
 {
@@ -33,13 +34,6 @@ class Attendance extends Model
     public function Rests()
     {
         return $this->hasMany(Rest::class);
-    }
-
-    public function scopeDateSearch($query, $date)
-    {
-        if (!empty($date)) {
-            $query->where('date', $date);
-        }
     }
 
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\TimecardController;
+use App\Http\Controllers\RestController;
 use Illuminate\Auth\Events\Authenticated;
 
 /*
@@ -54,4 +55,6 @@ Route::post('/rest/end', [RestController::class, 'endRest'])
     ->name('end_rest');
 
 Route::get('/attendance', [TimecardController::class, 'showTable'])
+    ->name('attendance');
+Route::post('/attendance', [TimecardController::class, 'showTable'])
     ->name('attendance');

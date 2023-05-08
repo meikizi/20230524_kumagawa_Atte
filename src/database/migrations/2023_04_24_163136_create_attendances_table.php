@@ -19,8 +19,8 @@ class CreateAttendancesTable extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->date('date');
-            $table->time('start_work')->nullable();
-            $table->time('end_work')->nullable();
+            $table->timestamp('start_work')->nullable();
+            $table->timestamp('end_work')->nullable();
             $table->timestamps();
         });
     }

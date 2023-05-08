@@ -29,7 +29,7 @@ class RegisterUserController extends Controller
 
         Auth::login($user);
 
-        // ホーム画面へリダイレクト
+        // 打刻ページへリダイレクト
         return redirect('/');
     }
 }

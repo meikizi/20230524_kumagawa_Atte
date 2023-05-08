@@ -25,8 +25,7 @@ class AttendanceRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'unique:attendances'],
-            'start_work' => ['date'],
-            'end_work' => ['date'],
+            'date' => ['required', 'date'],
         ];
     }
 }

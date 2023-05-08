@@ -43,3 +43,16 @@
     font-size: 20px;
     cursor: pointer;
 }
+
+.timecard__alert {
+    text-align: center;
+    margin-top: 48px;
+}
+
+.timecard__alert--success {
+    color: rgb(50, 170, 50);
+}
+
+.error__message {
+    color: rgb(250, 80, 80);
+}

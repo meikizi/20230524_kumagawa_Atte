@@ -18,6 +18,7 @@
         </div>
         @endisset
 
+        @isset($date)
         <form action="{{ route('attendance') }}" method="post">
             @csrf
             <div class="search-form__group">
@@ -29,7 +30,8 @@
                 <button class="search-form__button-submit" type="submit">検索</button>
             </div>
         </form>
-        <div class="database__content">
+        @endisset
+        <div class="database__container">
             <div class="database__header">
                 <p class="database__p">名前</p>
                 <p class="database__p">勤務開始</p>
@@ -38,19 +40,28 @@
                 <p class="database__p">勤務時間</p>
             </div>
             @isset($items)
-            @foreach ($items as $item)
-            <div class="database__data">
-                <p class="database__p">{{ $item['name'] }}</p>
-                <p class="database__p">{{ $item['start_work'] }}</p>
-                <p class="database__p">{{ $item['end_work'] }}</p>
-                <p class="database__p">{{ $item['rest_time'] }}</p>
-                <p class="database__p">{{ $item['work_time'] }}</p>
+            <div class="database__content">
+                @foreach ($items as $item)
+                <div class="database__data">
+                    <p class="database__p">{{ $item['name'] }}</p>
+                    <p class="database__p">{{ $item['start_work'] }}</p>
+                    <p class="database__p">{{ $item['end_work'] }}</p>
+                    <p class="database__p">{{ $item['rest_time'] }}</p>
+                    @if(!($item['rest_time'] === "00:00:00"))
+                        <p class="database__p">{{ $item['actual_work_time'] }}</p>
+                    @else
+                        <p class="database__p">{{ $item['work_time'] }}</p>
+                    @endif
+                </div>
+                @endforeach
             </div>
-            @endforeach
+            @if ($items->hasPages())
+                {{ $items->appends($paginate_params)->links('pagination::bootstrap-4') }}
+            @else
+                <div class="paginate">
+                    <a class="paginate-prev">&lt;</a><a class="current">1</a><a class="paginate-next">&gt;</a>
+                </div>
+            @endif
             @endisset
-            @isset($items)
-            {{ $items->links('pagination::bootstrap-4') }}
-            @endisset
-        </div>
     </div>
 @endsection

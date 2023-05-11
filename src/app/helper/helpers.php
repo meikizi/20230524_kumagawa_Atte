@@ -73,6 +73,7 @@ if (!function_exists('searchRest')) {
                 for ($j = 0; $j < count($individual_rest); $j++) {
                     $start_rest = new Carbon($individual_rest->whereNotNull('start_rest')->pluck('start_rest')->get($j));
                     $end_rest = new Carbon($individual_rest->whereNotNull('end_rest')->pluck('end_rest')->get($j));
+                    // dd($start_rest);
                     // unixタイムスタンプを使って休憩時間を求める
                     $start_unix_time = $start_rest->getTimestamp();
                     $end_unix_time = $end_rest->getTimestamp();
@@ -115,14 +116,32 @@ if (!function_exists('connectCollection')) {
                     ->where('id_list_rest', $id_list_att[$i])
                     ->first()
                     ->get('rest_time');
-                // // dd($rest_time_val);
+                // dd($rest_time_val);
+                $work_time_val = $collectionA
+                    ->where('id_list_att', $id_list_rest[$i])
+                    ->first()
+                    ->get('work_time');
+                // dd($work_time_val);
+
+                $rest_time = new DateTime($rest_time_val);
+                // dd($rest_time);
+                $work_time = new DateTime($work_time_val);
+                // dd($work_time);
+
+                // 実労働時間の算出
+                $actual_work_time = $work_time->diff($rest_time);
+                // dd($actual_work_time);
+                $actual_work_time = $actual_work_time->format('%H:%I:%S');
 
                 $total_collection[$i] = $collectionA[$i]
                     ->put('rest_time', $rest_time_val)
-                    ->put('rest_time', $rest_time_val);
+                    ->put('actual_work_time', $actual_work_time);
+                // dd($total_collection[$i]);
             } else {
                 $total_collection[$i] = $collectionA[$i]
-                    ->put('rest_time', '00:00:00');
+                    ->put('rest_time', '00:00:00')
+                    ->put('actual_work_time', '00:00:00');
+                // dd($total_collection[$i]);
             }
         }
         return $total_collection;

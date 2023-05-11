@@ -19,8 +19,8 @@ class CreateRestsTable extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->date('date');
-            $table->timestamp('start_rest')->nullable();
-            $table->timestamp('end_rest')->nullable();
+            $table->dateTime('start_rest')->nullable();
+            $table->dateTime('end_rest')->nullable();
             $table->timestamps();
         });
     }

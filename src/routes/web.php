@@ -47,14 +47,16 @@ Route::get('/', function () {
 
 Route::post('/start', [TimecardController::class, 'punchIn'])
     ->name('punchin');
-Route::post('/end', [TimecardController::class, 'punchOut'])
+Route::patch('/end', [TimecardController::class, 'punchOut'])
     ->name('punchout');
 Route::post('/rest/start', [RestController::class, 'startRest'])
     ->name('start_rest');
-Route::post('/rest/end', [RestController::class, 'endRest'])
+Route::patch('/rest/end', [RestController::class, 'endRest'])
     ->name('end_rest');
 
 Route::get('/attendance', [TimecardController::class, 'showTable'])
     ->name('attendance');
 Route::post('/attendance', [TimecardController::class, 'showTable'])
     ->name('attendance');
+// Route::get('/attendance', [TimecardController::class, 'showAttendance'])
+//     ->name('attendance');

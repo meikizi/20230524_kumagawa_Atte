@@ -26,4 +26,11 @@ class Rest extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function scopeStartRestSearch($query, $start_rest)
+    {
+        if (!empty($start_rest)) {
+            $query->where('start_rest', $start_rest);
+        }
+    }
+
 }

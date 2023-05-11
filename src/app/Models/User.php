@@ -66,4 +66,9 @@ class User extends Authenticatable
             $query->where('name', $name);
         }
     }
+
+    protected $dates = [
+        'start_work',
+        'end_work',
+    ];
 }

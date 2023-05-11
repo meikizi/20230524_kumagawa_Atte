@@ -19,6 +19,7 @@
                 </div>
                 <div class="timecard__button">
                     <form action="{{ route('punchout') }}" method="POST">
+                        @method('PATCH')
                         @csrf
                         <button class="timecard__submit" type="submit">勤務終了</button>
                     </form>
@@ -33,6 +34,7 @@
                 </div>
                 <div class="timecard__button">
                     <form action="{{ route('end_rest') }}" method="POST">
+                        @method('PATCH')
                         @csrf
                         <button class="timecard__submit">休憩終了</button>
                     </form>

@@ -44,7 +44,7 @@ class RestController extends Controller
         return redirect('/')->with('message', '休憩開始打刻が完了しました');
     }
 
-    public function endRest(Request $request)
+    public function endRest()
     {
         $user_id = Auth::id();
         $rest = Rest::where('user_id', $user_id)
@@ -56,7 +56,6 @@ class RestController extends Controller
         }
 
         $end_rest_time = Carbon::now();
-        $start_rest_time =  Rest::StartRestSearch($request->start_rest)->orderBy('id', 'DESC')->first();
         $rest->update([
             'end_rest' => $end_rest_time->format('Y-m-d H:i:s')
         ]);

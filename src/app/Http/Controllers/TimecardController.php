@@ -52,7 +52,7 @@ class TimecardController extends Controller
         return redirect('/')->with('message', '出勤打刻が完了しました');
     }
 
-    public function punchOut(Request $request)
+    public function punchOut()
     {
         $user = Auth::user();
         $attendance = Attendance::where('user_id', $user->id)
@@ -73,8 +73,23 @@ class TimecardController extends Controller
 
     public function showTable(Request $request)
     {
+        $dates= Attendance::groupBy('date')->orderByDesc('date')->pluck('date');
+        // dd($dates);
+        $dates = new LengthAwarePaginator(
+            $dates->forPage($request->page, 1),
+            count($dates),
+            1,
+            $request->page,
+            //  検索結果ページなどパラメーターを引き継ぐ
+            array(
+                'path' => $request->url('/attendance'),
+            )
+        );
+        // dd($dates);
+
         if ($request->date) {
             $date = $request->date;
+            $request->session()->flash('date', $date);
         } else {
             $now = new Carbon();
             $date = $now->format('Y-m-d');
@@ -96,18 +111,21 @@ class TimecardController extends Controller
                 $per_page,
                 $request->page,
                 //  検索結果ページなどパラメーターを引き継ぐ
-                array('path' => $request->url('/attendance'))
+                array(
+                    'path' => $request->url('/attendance'),
+                    'pageName' => 'page2',
+                    )
             );
             // dd($total_lists);
             $param = [
                 'items' => $total_lists,
-                'date' => $date,
+                'dates' => $dates,
             ];
-            dd($param);
+            // dd($param);
         } else {
             $param = [
                 'items' => null,
-                'date' => $date,
+                'dates' => $dates,
             ];
         }
 

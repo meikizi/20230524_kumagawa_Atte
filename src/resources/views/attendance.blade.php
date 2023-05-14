@@ -6,31 +6,36 @@
 
 @section('content')
     <div class="database">
-        {{-- <div class="database_date">
-            @foreach ($dates as $date)
-            <p>{{ $date['date'] }}</p>
-            @endforeach
-            {{ $dates->links() }}
-        </div> --}}
-        @isset($date)
         <div class="database_date">
-            <p>{{ $date }}</p>
-        </div>
-        @endisset
-
-        @isset($date)
-        <form action="{{ route('attendance') }}" method="post">
-            @csrf
-            <div class="search-form__group">
-                <div class="search-form__input">
-                    <input name="date" />
+            @foreach($dates as $date)
+            <form action="{{ route('attendance') }}" method="post">
+                @csrf
+                <div class="search-form__group">
+                    <div class="search-form__input">
+                        <input type="hidden" name="date" value="{{ $date }}"/>
+                        @if(session('date'))
+                        <input class="input-submit" type="submit" value="{{ session('date') }}">
+                        @else
+                        <input class="input-submit" type="submit" value="{{ $date }}">
+                        @endif
+                    </div>
                 </div>
+            </form>
+            @endforeach
+            {{ $dates->appends(request()->input('date'))->links() }}
+        </div>
+
+        {{-- <form action="{{ route('attendance') }}" method="post">
+        @csrf
+        <div class="search-form__group">
+            <div class="search-form__input">
+                <input name="date" />
             </div>
-            <div class="search-form__button">
-                <button class="search-form__button-submit" type="submit">検索</button>
-            </div>
-        </form>
-        @endisset
+        </div>
+        <div class="search-form__button">
+            <button class="search-form__button-submit" type="submit">検索</button>
+        </div> --}}
+
         <div class="database__container">
             <div class="database__header">
                 <p class="database__p">名前</p>

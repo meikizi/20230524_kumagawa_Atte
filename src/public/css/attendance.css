@@ -8,7 +8,7 @@
     background: #eee;
 }
 
-.database_date {
+.database__date {
     text-align: center;
     margin-bottom: 48px;
     font-weight: bold;
@@ -123,4 +123,37 @@ svg.w-5.h-5 {
     padding: 12px 12px;
     background: #fff;
     vertical-align: middle;
+}
+
+.user-database__p {
+    width: 20%;
+    margin: 0 auto;
+    font-weight: bold;
+}
+
+/* user_attendance_list.blade.php のスタイリング */
+
+.date {
+    width: 20%;
+    font-size: 16px;
+}
+
+.date_button {
+    width: 100px;
+    padding: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.date_button:hover {
+    opacity: 0.8;
+}
+
+.date__error {
+    color: red;
+    margin-bottom: 8px;
 }

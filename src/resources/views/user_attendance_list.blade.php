@@ -7,38 +7,26 @@
 @section('content')
     <div class="database">
         <div class="database__date">
-            @foreach($dates as $date)
-            <form action="{{ route('attendance') }}" method="get">
+            @isset($name)
+            <h2 class="attendance_list">{{"{$name}の勤務一覧"}}</h2>
+            <form method="get" action="/user_attendance_list">
                 @csrf
-                <div class="search-form__group">
-                    <div class="search-form__input">
-                        <input type="hidden" name="date" value="{{ $date }}"/>
-                        @if(session('date'))
-                        <input class="input-submit" type="submit" value="{{ session('date') }}">
-                        @else
-                        <input class="input-submit" type="submit" value="{{ $date }}">
-                        @endif
-                    </div>
-                </div>
+                <laval for="date" class="date_text">日付を選択して下さい。</laval>
+                <input type="date" name="date" value="date" id="date" class="date">
+                <button class="date_button">検索</button>
             </form>
-            @endforeach
-            {{ $dates->links() }}
-        </div>
-
-        {{-- <form action="{{ route('attendance') }}" method="post">
-        @csrf
-        <div class="search-form__group">
-            <div class="search-form__input">
-                <input name="date" />
+            @else
+            <div class="date__error">
+                下のログインを押して、ログインしてください
             </div>
+            <a href="{{ route('login') }}">
+                ログイン
+            </a>
+            @endisset
         </div>
-        <div class="search-form__button">
-            <button class="search-form__button-submit" type="submit">検索</button>
-        </div> --}}
-
         <div class="database__container">
             <div class="database__header">
-                <p class="database__p">名前</p>
+                <p class="database__p">日付</p>
                 <p class="database__p">勤務開始</p>
                 <p class="database__p">勤務終了</p>
                 <p class="database__p">休憩時間</p>
@@ -46,9 +34,9 @@
             </div>
             @isset($items)
             <div class="database__content">
-                @foreach ($items as $item)
+                @foreach($items as $item)
                 <div class="database__data">
-                    <p class="database__p">{{ $item['name'] }}</p>
+                    <p class="database__p">{{ $item['id_list_att'] }}</p>
                     <p class="database__p">{{ $item['start_work'] }}</p>
                     <p class="database__p">{{ $item['end_work'] }}</p>
                     <p class="database__p">{{ $item['rest_time'] }}</p>

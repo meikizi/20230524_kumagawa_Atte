@@ -103,5 +103,65 @@ class AttendancesTableSeeder extends Seeder
             'updated_at' => '2023-05-03 20:00:00'
         ];
         DB::table('attendances')->insert($param);
+
+        $param = [
+            'user_id' => '2',
+            'date' => '2023-05-03',
+            'start_work' => '2023-05-03 10:00:00',
+            'end_work' => '2023-05-03 20:00:00',
+            'created_at' => '2023-05-03 10:00:00',
+            'updated_at' => '2023-05-03 20:00:00'
+        ];
+        DB::table('attendances')->insert($param);
+
+        $param = [
+            'user_id' => '3',
+            'date' => '2023-05-03',
+            'start_work' => '2023-05-03 10:00:00',
+            'end_work' => '2023-05-03 20:00:00',
+            'created_at' => '2023-05-03 10:00:00',
+            'updated_at' => '2023-05-03 20:00:00'
+        ];
+        DB::table('attendances')->insert($param);
+
+        $param = [
+            'user_id' => '4',
+            'date' => '2023-05-03',
+            'start_work' => '2023-05-03 10:00:00',
+            'end_work' => '2023-05-03 20:00:00',
+            'created_at' => '2023-05-03 10:00:00',
+            'updated_at' => '2023-05-03 20:00:00'
+        ];
+        DB::table('attendances')->insert($param);
+
+        $param = [
+            'user_id' => '5',
+            'date' => '2023-05-03',
+            'start_work' => '2023-05-03 10:00:00',
+            'end_work' => '2023-05-03 20:00:00',
+            'created_at' => '2023-05-03 10:00:00',
+            'updated_at' => '2023-05-03 20:00:00'
+        ];
+        DB::table('attendances')->insert($param);
+
+        $param = [
+            'user_id' => '6',
+            'date' => '2023-05-03',
+            'start_work' => '2023-05-03 10:00:00',
+            'end_work' => '2023-05-03 20:00:00',
+            'created_at' => '2023-05-03 10:00:00',
+            'updated_at' => '2023-05-03 20:00:00'
+        ];
+        DB::table('attendances')->insert($param);
+
+        $param = [
+            'user_id' => '7',
+            'date' => '2023-05-03',
+            'start_work' => '2023-05-03 10:00:00',
+            'end_work' => '2023-05-03 20:00:00',
+            'created_at' => '2023-05-03 10:00:00',
+            'updated_at' => '2023-05-03 20:00:00'
+        ];
+        DB::table('attendances')->insert($param);
     }
 }

@@ -47,16 +47,16 @@
                 </div>
                 @endif
                 @error('start_work')
-                <p class="error__message">{{$message}}</p>
+                <p class="error__message">{{ $message }}</p>
                 @enderror
                 @error('end_work')
-                <p class="error__message">{{$message}}</p>
+                <p class="error__message">{{ $message }}</p>
                 @enderror
                 @error('start_rest')
-                <p class="error__message">{{$message}}</p>
+                <p class="error__message">{{ $message }}</p>
                 @enderror
                 @error('end_rest')
-                <p class="error__message">{{$message}}</p>
+                <p class="error__message">{{ $message }}</p>
                 @enderror
             </div>
         </div>

@@ -82,7 +82,7 @@ class TimecardController extends Controller
             $request->page,
             //  検索結果ページなどパラメーターを引き継ぐ
             array(
-                'path' => $request->url('/attendance'),
+                'path' => $request->url('/attendance')
             )
         );
         // dd($dates);
@@ -113,7 +113,6 @@ class TimecardController extends Controller
                 //  検索結果ページなどパラメーターを引き継ぐ
                 array(
                     'path' => $request->url('/attendance'),
-                    'pageName' => 'page2',
                     )
             );
             // dd($total_lists);
@@ -130,20 +129,66 @@ class TimecardController extends Controller
         }
 
         // 検索状態を引き継いでページング
-        return view('attendance', $param, [
-            'paginate_params' => [
-                'date' => $date,
-            ]
-        ]);
+        return view('attendance')->with($param);
     }
 
     public function showAttendance(Request $request)
     {
         $attendances = User::leftJoin('attendances', 'users.id', '=', 'attendances.user_id')
-            ->leftJoin('rests', 'users.id', '=', 'rests.user_id')
-            ->paginate(5);
+        ->leftJoin('rests', 'users.id', '=', 'rests.user_id')
+        ->paginate(5);
 
         // dd($attendances);
         return view('attendance', compact('attendances'));
     }
+
+    public function getUserList()
+    {
+        $user_names = User::select('name')->Paginate(5);
+        return view('user_list', compact('user_names'));
+    }
+
+    public function getUserAttendance(Request $request)
+    {
+        $user = Auth::user();
+        if ($request->date) {
+            $date = $request->date;
+            // dd($date);
+            $user_atte_list = searchAtteUser($date);
+            // dd($user_atte_list);
+            $user_rest_list = searchRestUser($date);
+        } else {
+            $user_atte_list = searchAtteUser();
+            $user_rest_list = searchRestUser();
+        }
+        // dd($user_atte_list);
+        // dd($user_rest_list);
+
+        if ($user_atte_list) {
+            $per_page = 5;
+            $total_lists = connectCollection($user_atte_list, $user_rest_list);
+            // dd($total_lists);
+            $total_lists = new LengthAwarePaginator(
+                $total_lists->forPage($request->page, $per_page),
+                count($total_lists),
+                $per_page,
+                $request->page,
+                array('path' => $request->url()),
+            );
+            // dd($total_lists);
+            $param = [
+                'items' => $total_lists,
+                'name' => $user->name,
+            ];
+        } else {
+            $param = [
+                'items' => null,
+                'name' => null,
+            ];
+        }
+        // dd($param);
+        return view('user_attendance_list', $param);
+    }
+
 }
+

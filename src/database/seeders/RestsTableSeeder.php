@@ -163,5 +163,65 @@ class RestsTableSeeder extends Seeder
             'updated_at' => '2023-05-03 12:30:00'
         ];
         DB::table('rests')->insert($param);
+
+        $param = [
+            'user_id' => '1',
+            'date' => '2023-05-04',
+            'start_rest' => '2023-05-04 12:00:00',
+            'end_rest' => '2023-05-04 12:30:00',
+            'created_at' => '2023-05-04 12:00:00',
+            'updated_at' => '2023-05-04 12:30:00'
+        ];
+        DB::table('rests')->insert($param);
+
+        $param = [
+            'user_id' => '1',
+            'date' => '2023-05-05',
+            'start_rest' => '2023-05-05 12:00:00',
+            'end_rest' => '2023-05-05 12:30:00',
+            'created_at' => '2023-05-05 12:00:00',
+            'updated_at' => '2023-05-05 12:30:00'
+        ];
+        DB::table('rests')->insert($param);
+
+        $param = [
+            'user_id' => '2',
+            'date' => '2023-05-05',
+            'start_rest' => '2023-05-05 12:00:00',
+            'end_rest' => '2023-05-05 12:30:00',
+            'created_at' => '2023-05-05 12:00:00',
+            'updated_at' => '2023-05-05 12:30:00'
+        ];
+        DB::table('rests')->insert($param);
+
+        $param = [
+            'user_id' => '1',
+            'date' => '2023-05-06',
+            'start_rest' => '2023-05-06 12:00:00',
+            'end_rest' => '2023-05-06 12:30:00',
+            'created_at' => '2023-05-06 12:00:00',
+            'updated_at' => '2023-05-06 12:30:00'
+        ];
+        DB::table('rests')->insert($param);
+
+        $param = [
+            'user_id' => '2',
+            'date' => '2023-05-06',
+            'start_rest' => '2023-05-06 12:00:00',
+            'end_rest' => '2023-05-06 12:20:00',
+            'created_at' => '2023-05-06 12:00:00',
+            'updated_at' => '2023-05-06 12:20:00'
+        ];
+        DB::table('rests')->insert($param);
+
+        $param = [
+            'user_id' => '3',
+            'date' => '2023-05-06',
+            'start_rest' => '2023-05-06 12:00:00',
+            'end_rest' => '2023-05-06 12:30:00',
+            'created_at' => '2023-05-06 12:00:00',
+            'updated_at' => '2023-05-06 12:30:00'
+        ];
+        DB::table('rests')->insert($param);
     }
 }

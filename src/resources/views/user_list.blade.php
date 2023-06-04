@@ -8,24 +8,28 @@
     <div class="database">
         <div class="database__date">
             <div class="database__container">
-                <div class="database__header">
-                    <p class="user-database__p">名前</p>
+                <div class="user-database__header">
+                    <h2 class="user-database__p">名前一覧</h2>
                 </div>
                 @isset($user_names)
-                <div class="database__content">
+                <div class="user-database__content">
                     @foreach ($user_names as $user_name)
-                    <div class="database__data">
-                        <p class="user-database__p">{{ $user_name['name'] }}</p>
+                    <div class="user-database__data">
+                        <form method="post" action="{{ route('user_list') }}">
+                            @csrf
+                            <input type="text" name="name" value="{{ $user_name['name'] }}" class="user-name">
+                            <button type="submit" class="submit-button">検索</button>
+                        </form>
                     </div>
                     @endforeach
                 </div>
-                @if ($user_names->hasPages())
-                    {{ $user_names->links('pagination::bootstrap-4') }}
-                @else
-                    <div class="paginate">
-                        <a class="paginate-prev">&lt;</a><a class="current">1</a><a class="paginate-next">&gt;</a>
-                    </div>
-                @endif
+                <div class="paginate">
+                    @if ($user_names->hasPages())
+                        {{ $user_names->links('pagination::bootstrap-4') }}
+                    @else
+                    <a class="paginate__prev">&lt;</a><a class="current">1</a><a class="paginate__next">&gt;</a>
+                    @endif
+                </div>
                 @endisset
             </div>
         </div>

@@ -7,34 +7,30 @@
 @section('content')
     <div class="database">
         <div class="database__date">
-            @foreach($dates as $date)
-            <form action="{{ route('attendance') }}" method="get">
-                @csrf
-                <div class="search-form__group">
-                    <div class="search-form__input">
-                        <input type="hidden" name="date" value="{{ $date }}"/>
-                        @if(session('date'))
-                        <input class="input-submit" type="submit" value="{{ session('date') }}">
+            <div class="prev-button">
+                <form action="{{ route('attendance') }}" method="get">
+                    @csrf
+                    @if($i === 0)
+                    <input type="hidden" name="date" value="{{ $dates[$i] }}"/>
+                    @else
+                    <input type="hidden" name="date" value="{{ $dates[$i - 1] }}"/>
+                    @endif
+                    <button type="submit" class="previous"><</button>
+                </form>
+            </div>
+            <div class="attendance-date">{{ $dates[$i] }}</div>
+            <div class="next-button">
+                <form action="{{ route('attendance') }}" method="get">
+                    @csrf
+                        @if($i === $for_dates - 1)
+                        <input type="hidden" name="date" value="{{ $dates[$i] }}"/>
                         @else
-                        <input class="input-submit" type="submit" value="{{ $date }}">
+                            <input type="hidden" name="date" value="{{ $dates[$i + 1] }}"/>
                         @endif
-                    </div>
-                </div>
-            </form>
-            @endforeach
-            {{ $dates->links() }}
-        </div>
-
-        {{-- <form action="{{ route('attendance') }}" method="post">
-        @csrf
-        <div class="search-form__group">
-            <div class="search-form__input">
-                <input name="date" />
+                        <button type="submit" class="next">></button>
+                </form>
             </div>
         </div>
-        <div class="search-form__button">
-            <button class="search-form__button-submit" type="submit">検索</button>
-        </div> --}}
 
         <div class="database__container">
             <div class="database__header">
@@ -60,13 +56,13 @@
                 </div>
                 @endforeach
             </div>
-            @if ($items->hasPages())
-                {{ $items->appends(request()->query())->links('pagination::bootstrap-4') }}
-            @else
-                <div class="paginate">
-                    <a class="paginate-prev">&lt;</a><a class="current">1</a><a class="paginate-next">&gt;</a>
-                </div>
-            @endif
+            <div class="paginate">
+                @if ($items->hasPages())
+                    {{ $items->appends(request()->query())->links('pagination::bootstrap-4') }}
+                @else
+                    <a class="paginate__prev">&lt;</a><a class="current">1</a><a class="paginate__next">&gt;</a>
+                @endif
+            </div>
             @endisset
         </div>
     </div>

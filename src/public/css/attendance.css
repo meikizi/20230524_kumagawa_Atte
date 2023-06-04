@@ -3,69 +3,42 @@
     width: 100%;
     height: calc(100vh - 80px - 40px);
     margin: 0 auto;
-    padding-top: 48px;
+    padding-top: 32px;
     font-size: 20px;
     background: #eee;
 }
 
 .database__date {
-    text-align: center;
-    margin-bottom: 48px;
-    font-weight: bold;
-    position: relative;
-}
-
-.input-submit {
-    appearance: none;
-    font-size: 20px;
-    font-weight: bold;
-    color: inherit;
-    font-family: inherit;
-    background-color: transparent;
-    background-image: none;
-    border: none;
-    border-radius: 0;
-}
-
-svg.w-5.h-5 {
-    width: 24px;
-    height: 24px;
-    transform: scaleX(1.5);
-    color: rgb(80, 80, 251);
-    background: #fff;
-    border: 1px solid rgb(80, 80, 251);
-}
-
-.previous {
-    position: absolute;
-    top: 0;
-    left: 40%;
-}
-
-.next {
-    position: absolute;
-    top: 0;
-    left: 58%;
-}
-
-.pg {
-    display: inline-block;
-}
-
-.pagination {
     display: flex;
-    list-style-type: none;
-}
-
-.page-item {
-    border: 1px solid #ddd;
-    padding: 6px 12px;
     text-align: center;
-    background: #fff;
+    margin-bottom: 32px;
+    font-weight: bold;
+    /* position: relative; */
 }
 
-.page-link {
-    color: rgb(110, 160, 230);
+.prev-button {
+    margin-left: 480px;
+}
+
+.attendance-date {
+    margin: 0 auto;
+    padding-top: 4px;
+}
+
+.next-button {
+    margin-right: 480px;
+}
+
+.previous,
+.next {
+    color: rgb(9, 70, 211);
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid rgb(10, 70, 210);
+    padding: 4px 12px;
+    background: #fff;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 .database__container {
@@ -76,7 +49,7 @@ svg.w-5.h-5 {
 
 .database__header {
     display: flex;
-    padding: 20px 32px;
+    padding: 24px 4px;
     border-top: 1px solid #000;
 }
 
@@ -86,12 +59,12 @@ svg.w-5.h-5 {
 }
 
 .database__content {
-    height: 400px;
+    height: calc(100vh - 360px);
 }
 
 .database__data {
     display: flex;
-    padding: 20px 32px;
+    padding: 24px 4px;
     font-size: 16px;
     border-top: 1px solid #000;
 }
@@ -100,13 +73,15 @@ svg.w-5.h-5 {
     text-align: center;
 }
 
-.paginate-prev {
+.paginate__prev,
+.paginate__next {
     color: rgb(80, 174, 251);
     font-size: 12px;
     border: 1px solid #ddd;
     padding: 12px 12px;
     background: #fff;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 .current {
@@ -114,31 +89,41 @@ svg.w-5.h-5 {
     border: 1px solid #ddd;
     padding: 6px 12px;
     background: #fff;
-}
-
-.paginate-next {
-    color: rgb(80, 174, 251);
-    font-size: 12px;
-    border: 1px solid #ddd;
-    padding: 12px 12px;
-    background: #fff;
     vertical-align: middle;
 }
 
+/* user_list.blade.php styling */
+
+.user-database__header {
+    font-size: 20px;
+    margin-bottom: 32px;
+}
+
 .user-database__p {
-    width: 20%;
-    margin: 0 auto;
-    font-weight: bold;
+    text-align: center;
 }
 
-/* user_attendance_list.blade.php のスタイリング */
+.user-database__content {
+    height: calc(100vh - 300px);
+}
 
-.date {
-    width: 20%;
+.user-database__data {
+    padding: 20px;
     font-size: 16px;
+    border-top: 1px solid #000;
 }
 
-.date_button {
+
+.user-name {
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.5;
+    background: inherit;
+    margin-right: 600px;
+}
+
+.submit-button {
     width: 100px;
     padding: 4px;
     font-size: 16px;
@@ -149,11 +134,48 @@ svg.w-5.h-5 {
     cursor: pointer;
 }
 
-.date_button:hover {
-    opacity: 0.8;
+.submit-button:hover {
+    opacity: 0.6;
 }
 
-.date__error {
+/* user_atte_list.blade.php styling */
+.database__name {
+    margin-bottom: 32px;
+}
+
+.attendance_list__error {
+    text-align: center;
+    color: rgb(250, 80, 80);
+}
+
+/* user_attendance_list.blade.php styling */
+
+.attendance-database__date {
+    text-align: center;
+    margin-bottom: 32px;
+    font-weight: bold;
+}
+
+.attendance-database__content {
+    height: calc(100vh - 440px);
+}
+
+.attendance_list {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.laval {
+    margin-right: 24px;
+}
+
+.input-date {
+    width: 20%;
+    font-size: 16px;
+    margin-right: 32px;
+}
+
+.error-date {
     color: red;
     margin-bottom: 8px;
 }

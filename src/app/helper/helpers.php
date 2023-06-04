@@ -150,11 +150,11 @@ if (!function_exists('connectCollection')) {
     }
 }
 
-if (!function_exists('searchAtteUser')) {
+if (!function_exists('searchAttendanceUser')) {
     /**
      * ログインしている人の勤怠記録のコレクション作成
      */
-    function searchAtteUser($date = false)
+    function searchAttendanceUser($date = false)
     {
         //現在ログインしている人のidでモデルからこれまでの勤怠記録（休憩除く）を全て取得
         //日にちで検索した場合は、引数で与えられた日にちで絞り込み
@@ -248,6 +248,133 @@ if (!function_exists('searchRestUser')) {
                 // dd($daily_rest);
                 $daily_rest_seconds = 0;
                     $rest_num = count($daily_rest);
+                for ($j = 0; $j < $rest_num; $j++) {
+                    $start_rest = new Carbon($daily_rest->whereNotNull('start_rest')->pluck('start_rest')->get($j));
+                    // dd($start_rest);
+                    // 休憩終了がnull（休憩中）の場合、閲覧時刻でCarbonインスタンス生成→閲覧の時点での総休憩時間を表示
+                    $get_time_value = $daily_rest->whereNotNull('end_rest')->pluck('end_rest')->get($j);
+                    $end_rest = new Carbon($get_time_value);
+                    // dd($end_rest);
+                    $start_unix_time = $start_rest->getTimestamp();
+                    // dd($start_unix_time);
+                    $end_unix_time = $end_rest->getTimestamp();
+                    // dd($end_unix_time);
+                    $rest_seconds = $end_unix_time - $start_unix_time;
+                    // dd($rest_seconds);
+                    $daily_rest_seconds += $rest_seconds;
+                }
+                $date = $daily_rest->pluck('date')->first();
+                // dd($date);
+                $display_seconds = (int)$daily_rest_seconds % 60;
+                // dd($display_seconds);
+                $display_minutes = floor($daily_rest_seconds / 60);
+                $display_hours = floor($display_minutes / 60);
+                $daily_rest = new DateInterval("PT{$display_hours}H{$display_minutes}M{$display_seconds}S");
+                // dd($daily_rest);
+                $daily_data = collect([
+                    'id_list_rest' => $date,
+                    'rest_time' => $daily_rest->format('%H:%I:%S')
+                ]);
+                $data_set[$i] = $daily_data;
+            }
+        } else {
+            $data_set = Null;
+        }
+        // dd($data_set);
+        return $data_set;
+    }
+}
+
+if (!function_exists('searchAtteUser')) {
+    /**
+     * ログインしている人の勤怠記録のコレクション作成
+     */
+    function searchAtteUser($name = false)
+    {
+        $user_id = User::where('name', $name)->pluck('id')->implode(', ');
+        // dd($user_id);
+        //現在ログインしている人のidでモデルからこれまでの勤怠記録（休憩除く）を全て取得
+        //日にちで検索した場合は、引数で与えられた日にちで絞り込み
+        $user_attendance = Attendance::where('user_id', $user_id)->get();
+        // dd($user_attendance);
+
+        //日ごとに出勤・退勤のレコードがあるので、それらをまとめて出勤日のカラムの値を順に取得
+        $date_list = $user_attendance->unique('date')->pluck('date');
+        // dd($date_list);
+        $data_set = collect([]);
+
+        //for文を回す回数
+        $for_num = (count($date_list));
+
+        //これまでの勤務記録があれば、for文内で計算
+        if ($user_attendance->isNotEmpty()) {
+            for ($i = 0; $i < $for_num; $i++) {
+                //出勤時間のカラムから値を順に取得,その値でCarbonインスタンス生成
+                $user_start = new Carbon(
+                    $user_attendance
+                        ->whereNotNull('start_work')
+                        ->pluck('start_work')
+                        // $i番目のデータを取得
+                        ->get($i)
+                );
+                // dd($user_start);
+                //退勤時間のカラムから値を順に取得,その値でCarbonインスタンス生成
+                $get_time_value = $user_attendance
+                    ->whereNotNull('end_work')
+                    ->pluck('end_work')
+                    ->get($i);
+                // dd($get_time_value);
+                $user_end = new Carbon($get_time_value);
+                // dd($user_end);
+                //出勤時間と退勤時間の差で勤務時間を計算
+                $work_time = $user_start->diff($user_end);
+                // dd($work_time);
+
+                // 退勤時間の値があれば退勤時間と勤務時間を記録
+                if (isset($get_time_value)) {
+                    $user_end = $user_end->format('H:i:s');
+                    // DateInterval::format 間隔をフォーマットする
+                    $work_time = $work_time->format('%H:%I:%S');
+                } else {
+                    //退勤時間の値が無い（勤務中）なら、それぞれ以下のように記録
+                    $user_end = '---';
+                    $work_time = $work_time->format('%H:%I:%S');
+                }
+                //一日の出勤日、出勤時間、退勤時間、勤務時間のリストをコレクションにする。
+                $daily_data = collect([
+                    'id_list_att' => $date_list[$i],
+                    'start_work' => $user_start->format('H:i:s'),
+                    'end_work' => $user_end,
+                    'work_time' => $work_time
+                ]);
+                // dd($daily_data);
+                $data_set[$i] = $daily_data;
+            }
+        } else {
+            $data_set = null;
+        }
+        // dd($data_set);
+        return $data_set;
+    }
+}
+
+if (!function_exists('searchBreakUser')) {
+    /**
+     * ログインしている人の休憩記録のコレクション作成
+     */
+    function searchBreakUser($name)
+    {
+        $user_id = User::where('name', $name)->pluck('id')->implode(', ');
+        $user_rest = Rest::where('user_id', $user_id)->get();
+        $date_list = $user_rest->unique('date')->pluck('date');
+        // dd($date_list);
+        $data_set = collect([]);
+        if ($user_rest->isNotEmpty()) {
+            for ($i = 0; $i < count($date_list); $i++) {
+                $daily_rest = $user_rest->where('date', $date_list[$i]);
+                // dd($daily_rest);
+                $daily_rest_seconds = 0;
+                $rest_num = count($daily_rest);
                 for ($j = 0; $j < $rest_num; $j++) {
                     $start_rest = new Carbon($daily_rest->whereNotNull('start_rest')->pluck('start_rest')->get($j));
                     // dd($start_rest);

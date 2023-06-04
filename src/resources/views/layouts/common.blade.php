@@ -28,6 +28,16 @@
                     </a>
                 </li>
                 <li class="nav_item">
+                    <a href="{{ route('user_list') }}">
+                        ユーザー一覧
+                    </a>
+                </li>
+                <li class="nav_item">
+                    <a href="{{ route('user_attendance') }}">
+                        ユーザー勤怠表
+                    </a>
+                </li>
+                <li class="nav_item">
                     <a href="{{ route('logout') }}">
                         ログアウト
                     </a>

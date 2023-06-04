@@ -76,44 +76,44 @@ class RegisterController extends Controller
     //     ]);
     // }
 
-    /**
-     * ユーザ登録画面の表示
-     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
-     */
-    protected function getRegister()
-    {
-        return view('auth.register');
-    }
+    // /**
+    //  * ユーザ登録画面の表示
+    //  * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+    //  */
+    // protected function getRegister()
+    // {
+    //     return view('auth.register');
+    // }
 
-    /**
-     * ユーザ登録機能
-     * @param array $data
-     * @return unknown
-     */
-    protected function postRegister(array $data)
-    {
-        // ユーザ登録処理
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+    // /**
+    //  * ユーザ登録機能
+    //  * @param array $data
+    //  * @return unknown
+    //  */
+    // protected function postRegister(array $data)
+    // {
+    //     // ユーザ登録処理
+    //     User::create([
+    //         'name' => $data['name'],
+    //         'email' => $data['email'],
+    //         'password' => Hash::make($data['password']),
+    //     ]);
 
-        // ホーム画面へリダイレクト
-        return redirect('/timecard');
-    }
+    //     // ホーム画面へリダイレクト
+    //     return redirect('/timecard');
+    // }
 
     public function pre_check(Request $request)
     {
         $this->validator($request->all())->validate();
-        //flash data
+        //emailだけ指定し、フラッシュデータとして保持
         $request->flashOnly('email');
 
-        $bridge_request = $request->all();
+        $login_data = $request->all();
         // password マスキング
-        $bridge_request['password_mask'] = '******';
+        $login_data['password_mask'] = '******';
 
-        return view('auth.register_check')->with($bridge_request);
+        return view('auth.register_check')->with($login_data);
     }
 
     protected function create(array $data)
@@ -124,7 +124,9 @@ class RegisterController extends Controller
             'email_verify_token' => base64_encode($data['email']),
         ]);
 
+        // Mailableクラス
         $email = new EmailVerification($user);
+        // $user->email:宛先
         Mail::to($user->email)->send($email);
 
         return $user;
@@ -132,7 +134,8 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-        event(new Registered($user = $this->create($request->all())));
+        // DB登録したユーザーを設定
+        event(new Registered($user = $this->create( $request->all() )));
 
         return view('auth.registered');
     }
@@ -145,7 +148,6 @@ class RegisterController extends Controller
             return view('auth.main.register')->with('message', '無効なトークンです。');
         } else {
             $user = User::where('email_verify_token', $email_token)->first();
-            // dd($user);
             // 本登録済みユーザーか
             if ($user->status == config('const.USER_STATUS.REGISTER')) //REGISTER=1
             {
@@ -167,22 +169,18 @@ class RegisterController extends Controller
 
     public function mainCheck(Request $request, $email_token)
     {
-        // dd($request);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
         ]);
-        // dd($email_token);
 
         $user = new User();
         $user->name = $request->name;
-        // dd($user);
 
         return view('auth.main.register_check', compact('user', 'email_token'));
     }
 
     public function mainRegister(Request $request, $email_token)
     {
-        // dd($request);
         $user = User::where('email_verify_token', $email_token)->first();
         $user->status = config('const.USER_STATUS.REGISTER');
         $user->name = $request->name;

@@ -27,6 +27,9 @@ use Illuminate\Auth\Events\Authenticated;
 //     'register' => false
 // ]);
 
+/**
+ * ログイン関連のページのルーティング
+ */
 Auth::routes();
 
 // Route::group(['middleware' => 'guest'], function() {
@@ -42,15 +45,21 @@ Route::get('register/verify/{token}', [RegisterController::class, 'showForm']);
 Route::post('register/main_check/{token}', [RegisterController::class, 'mainCheck'])->name('register.main.check');
 Route::post('register/main_register/{token}', [RegisterController::class, 'mainRegister'])->name('register.main.registered');
 
+
 Route::get('/login', [AuthenticatedSessionController::class, 'login'])
     ->name('login');
 Route::get('/logout', [AuthenticatedSessionController::class, 'Logout'])
 ->name('logout');
 
-Route::get('/', function () {
-    return view('timecard');
-})->middleware('auth')
-->name('timecard');
+// Route::group(['middleware' => ['auth', 'verified']], function () {
+//     Route::get('/', function () {
+//         return view('timecard');
+//     });
+// });
+
+Route::get('/', function (){ return view('timecard'); })
+    ->middleware('auth', 'registered')
+    ->name('timecard');
 
 Route::post('/start', [TimecardController::class, 'punchIn'])
     ->name('punchin');
@@ -68,9 +77,13 @@ Route::get('/attendance', [TimecardController::class, 'showTable'])
 // Route::get('/attendance', [TimecardController::class, 'showAttendance'])
 //     ->name('attendance');
 
-Route::get('/user_list', [TimecardController::class, 'getUserList'])
+Route::get('/user_list', [TimecardController::class, 'getUserList']);
+
+Route::post('/user_list', [TimecardController::class, 'postUserList'])
     ->name('user_list');
 
 Route::get('/user_attendance_list', [TimecardController::class, 'getUserAttendance'])
-    ->name('person_atte');
-// Route::post('/user_attendance_list', [TimecardController::class, 'getUserAttendance']);
+    ->name('user_attendance');
+
+Route::get('/user_atte_list', [TimecardController::class, 'getUserAtte'])
+    ->name('user_atte');

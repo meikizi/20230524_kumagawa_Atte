@@ -12,7 +12,7 @@
                     <div class="card-header">本会員登録</div>
 
                     @isset($message)
-                        <div class="card-body">
+                        <div class="card-error">
                             {{$message}}
                         </div>
                     @endisset

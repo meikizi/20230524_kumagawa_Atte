@@ -15,14 +15,9 @@ class TimecardController extends Controller
 {
     public function punchIn()
     {
-        /**
-         * 現在認証しているユーザーを取得
-         */
+        // 現在認証しているユーザーを取得
         $user = Auth::user();
 
-        /**
-         * 打刻は1日一回までにしたい
-         */
         $old_attendance = Attendance::where('user_id', $user->id)
             ->orderBy('id', 'DESC')->first();
         if ($old_attendance) {
@@ -34,9 +29,7 @@ class TimecardController extends Controller
 
         $new_attendance_day = Carbon::today();
 
-        /**
-         * 同日付に、既に出勤打刻している場合エラーを吐き出す。
-         */
+        // 同日付に、既に出勤打刻している場合エラーを吐き出す。
         if (($old_attendance_day == $new_attendance_day)) {
             throw ValidationException::withMessages(['start_work' => '既に出勤打刻がされています']);
             return redirect('/');
@@ -75,24 +68,20 @@ class TimecardController extends Controller
     {
         $dates= Attendance::groupBy('date')->orderByDesc('date')->pluck('date');
         // dd($dates);
-        $dates = new LengthAwarePaginator(
-            $dates->forPage($request->page, 1),
-            count($dates),
-            1,
-            $request->page,
-            //  検索結果ページなどパラメーターを引き継ぐ
-            array(
-                'path' => $request->url('/attendance')
-            )
-        );
-        // dd($dates);
+        $for_dates = $dates->count();
+        // dd($for_dates);
 
         if ($request->date) {
             $date = $request->date;
-            $request->session()->flash('date', $date);
+            // コレクション$datesで値がリクエストで送られた日付と一致するときのキーを取得
+            $i = $dates->filter(fn($value) => $value == $date)->keys()->first();
+            // dd($i);
+            // $request->session()->flash('date', $date);
         } else {
             $now = new Carbon();
+            $i = 0;
             $date = $now->format('Y-m-d');
+            // dd($date);
         }
         // dd($date);
         $attendance_lists = searchAttendance($date);
@@ -119,27 +108,21 @@ class TimecardController extends Controller
             $param = [
                 'items' => $total_lists,
                 'dates' => $dates,
+                'for_dates' => $for_dates,
+                'i' => $i,
             ];
             // dd($param);
         } else {
             $param = [
                 'items' => null,
                 'dates' => $dates,
+                'for_dates' => $for_dates,
+                'i' => $i,
             ];
         }
 
         // 検索状態を引き継いでページング
         return view('attendance')->with($param);
-    }
-
-    public function showAttendance(Request $request)
-    {
-        $attendances = User::leftJoin('attendances', 'users.id', '=', 'attendances.user_id')
-        ->leftJoin('rests', 'users.id', '=', 'rests.user_id')
-        ->paginate(5);
-
-        // dd($attendances);
-        return view('attendance', compact('attendances'));
     }
 
     public function getUserList()
@@ -148,17 +131,29 @@ class TimecardController extends Controller
         return view('user_list', compact('user_names'));
     }
 
+    public function postUserList(Request $request)
+    {
+        $name = $request->name;
+        // dd($name);
+        if($name === null)
+        {
+            return view('user_list');
+        }
+        return redirect()->route('user_atte')->with(compact('name'));
+        // return view('user_atte_list', compact('name'));
+    }
+
     public function getUserAttendance(Request $request)
     {
         $user = Auth::user();
         if ($request->date) {
             $date = $request->date;
             // dd($date);
-            $user_atte_list = searchAtteUser($date);
+            $user_atte_list = searchAttendanceUser($date);
             // dd($user_atte_list);
             $user_rest_list = searchRestUser($date);
         } else {
-            $user_atte_list = searchAtteUser();
+            $user_atte_list = searchAttendanceUser();
             $user_rest_list = searchRestUser();
         }
         // dd($user_atte_list);
@@ -188,6 +183,44 @@ class TimecardController extends Controller
         }
         // dd($param);
         return view('user_attendance_list', $param);
+    }
+
+    public function getUserAtte(Request $request)
+    {
+        // $name = $request->name;
+        $name = session('name');
+        // dd($name);
+        $request->session()->flash('name', $name);
+
+            $user_atte_list = searchAtteUser($name);
+            $user_rest_list = searchBreakUser($name);
+        // dd($user_atte_list);
+        // dd($user_rest_list);
+
+        if ($user_atte_list) {
+            $per_page = 5;
+            $total_lists = connectCollection($user_atte_list, $user_rest_list);
+            // dd($total_lists);
+            $total_lists = new LengthAwarePaginator(
+                $total_lists->forPage($request->page, $per_page),
+                count($total_lists),
+                $per_page,
+                $request->page,
+                array('path' => $request->url('/user_atte_list')),
+            );
+            // dd($total_lists);
+            $param = [
+                'items' => $total_lists,
+                'name' => $name,
+            ];
+        } else {
+            $param = [
+                'items' => null,
+                'name' => null,
+            ];
+        }
+        // dd($param);
+        return view('user_atte_list', $param);
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Jrean\UserVerification\Exceptions\UserNotVerifiedException;
 
 class Handler extends ExceptionHandler
 {
@@ -38,4 +39,14 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    // public function render($request, Throwable $exception)
+    // {
+    //     if ($exception instanceof UserNotVerifiedException) {
+
+    //         return response()->view('errors.not_verified', [], 500);
+    //     }
+
+    //     return parent::render($request, $exception);
+    // }
 }

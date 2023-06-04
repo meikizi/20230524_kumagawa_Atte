@@ -91,3 +91,13 @@
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
 }
+
+.card-error {
+    font-weight: bold;
+    color: rgb(250, 80, 80);
+}
+
+/* registered.blade.php styling */
+.card-body__text {
+    line-height: 1.5;
+}

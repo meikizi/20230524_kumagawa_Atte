@@ -47,3 +47,23 @@ a {
     transform: translateY(-50%) translateX(-50%);
 }
 
+/* bootstrap-4.blade.php styling */
+.pg {
+    display: inline-block;
+}
+
+.pagination {
+    display: flex;
+    list-style-type: none;
+}
+
+.page-item {
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    text-align: center;
+    background: #fff;
+}
+
+.page-link {
+    color: rgb(110, 160, 230);
+}

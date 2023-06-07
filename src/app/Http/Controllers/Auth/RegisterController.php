@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -28,13 +27,6 @@ class RegisterController extends Controller
     */
 
     use RegistersUsers;
-
-    // /**
-    //  * Where to redirect users after registration.
-    //  *
-    //  * @var string
-    //  */
-    // protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -61,48 +53,6 @@ class RegisterController extends Controller
         ]);
     }
 
-    // /**
-    //  * Create a new user instance after a valid registration.
-    //  *
-    //  * @param  array  $data
-    //  * @return \App\Models\User
-    //  */
-    // protected function create(array $data)
-    // {
-    //     return User::create([
-    //         'name' => $data['name'],
-    //         'email' => $data['email'],
-    //         'password' => Hash::make($data['password']),
-    //     ]);
-    // }
-
-    // /**
-    //  * ユーザ登録画面の表示
-    //  * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
-    //  */
-    // protected function getRegister()
-    // {
-    //     return view('auth.register');
-    // }
-
-    // /**
-    //  * ユーザ登録機能
-    //  * @param array $data
-    //  * @return unknown
-    //  */
-    // protected function postRegister(array $data)
-    // {
-    //     // ユーザ登録処理
-    //     User::create([
-    //         'name' => $data['name'],
-    //         'email' => $data['email'],
-    //         'password' => Hash::make($data['password']),
-    //     ]);
-
-    //     // ホーム画面へリダイレクト
-    //     return redirect('/timecard');
-    // }
-
     public function pre_check(Request $request)
     {
         $this->validator($request->all())->validate();
@@ -113,7 +63,7 @@ class RegisterController extends Controller
         // password マスキング
         $login_data['password_mask'] = '******';
 
-        return view('auth.register_check')->with($login_data);
+        return view('auth.pre_register_check')->with($login_data);
     }
 
     protected function create(array $data)
@@ -137,29 +87,28 @@ class RegisterController extends Controller
         // DB登録したユーザーを設定
         event(new Registered($user = $this->create( $request->all() )));
 
-        return view('auth.registered');
+        return view('auth.pre_registered');
     }
 
     public function showForm($email_token)
     {
-        // dd($email_token);
         // 使用可能なトークンか
         if (!User::where('email_verify_token', $email_token)->exists()) {
             return view('auth.main.register')->with('message', '無効なトークンです。');
         } else {
             $user = User::where('email_verify_token', $email_token)->first();
             // 本登録済みユーザーか
-            if ($user->status == config('const.USER_STATUS.REGISTER')) //REGISTER=1
+            // ステータス値は config/const.php で管理
+            if ($user->status == config('const.USER_STATUS.REGISTER'))
             {
                 logger("status" . $user->status);
                 return view('auth.main.register')->with('message', 'すでに本登録されています。ログインして利用してください。');
             }
-            // ユーザーステータス更新
-            $user->status = config('const.USER_STATUS.MAIL_AUTHED');
-            // dd($user);
+            // ユーザーステータスをメール認証済に更新
+            $user->status = config('const.USER_STATUS.MAIL_AUTHED');;
             $user->email_verified_at = Carbon::now();
+
             if ($user->save()) {
-                // dd($email_token);
                 return view('auth.main.register', compact('email_token'));
             } else {
                 return view('auth.main.register')->with('message', 'メール認証に失敗しました。再度、メールからリンクをクリックしてください。');
@@ -182,6 +131,7 @@ class RegisterController extends Controller
     public function mainRegister(Request $request, $email_token)
     {
         $user = User::where('email_verify_token', $email_token)->first();
+        // ユーザーステータスを本登録済に更新
         $user->status = config('const.USER_STATUS.REGISTER');
         $user->name = $request->name;
         $user->save();

@@ -4,10 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\TimecardController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\RestController;
-use Illuminate\Auth\Events\Authenticated;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,25 +19,11 @@ use Illuminate\Auth\Events\Authenticated;
 |
 */
 
-// /**
-//  * ユーザ登録機能をオフに切替
-//  */
-// Auth::routes([
-//     'register' => false
-// ]);
-
 /**
  * ログイン関連のページのルーティング
  */
 Auth::routes();
 
-// Route::group(['middleware' => 'guest'], function() {
-//     // ログイン前のみでのルーティングを記述
-//     Route::get('/register', [RegisterUserController::class, 'getRegister'])
-//         ->name('register');
-//     Route::post('/register', [RegisterUserController::class, 'postRegister'])
-//         ->name('register');
-// });
 
 Route::post('register/pre_check', [RegisterController::class, 'pre_check'])->name('register.pre_check');
 Route::get('register/verify/{token}', [RegisterController::class, 'showForm']);
@@ -51,39 +36,29 @@ Route::get('/login', [AuthenticatedSessionController::class, 'login'])
 Route::get('/logout', [AuthenticatedSessionController::class, 'Logout'])
 ->name('logout');
 
-// Route::group(['middleware' => ['auth', 'verified']], function () {
-//     Route::get('/', function () {
-//         return view('timecard');
-//     });
-// });
-
-Route::get('/', function (){ return view('timecard'); })
+Route::get('/', function () { return view('timecard'); })
     ->middleware('auth', 'registered')
     ->name('timecard');
 
-Route::post('/start', [TimecardController::class, 'punchIn'])
-    ->name('punchin');
-Route::patch('/end', [TimecardController::class, 'punchOut'])
-    ->name('punchout');
+Route::post('/start', [TimecardController::class, 'startWork'])
+    ->name('start_work');
+Route::patch('/end', [TimecardController::class, 'endWork'])
+    ->name('end_work');
 Route::post('/rest/start', [RestController::class, 'startRest'])
     ->name('start_rest');
 Route::patch('/rest/end', [RestController::class, 'endRest'])
     ->name('end_rest');
 
-Route::get('/attendance', [TimecardController::class, 'showTable'])
+Route::get('/attendance', [AttendanceController::class, 'DailyAttendance'])
     ->name('attendance');
-// Route::post('/attendance', [TimecardController::class, 'showTable'])
-//     ->name('attendance');
-// Route::get('/attendance', [TimecardController::class, 'showAttendance'])
-//     ->name('attendance');
 
-Route::get('/user_list', [TimecardController::class, 'getUserList']);
+Route::get('/user_list', [AttendanceController::class, 'getUserList']);
 
-Route::post('/user_list', [TimecardController::class, 'postUserList'])
+Route::post('/user_list', [AttendanceController::class, 'postUserList'])
     ->name('user_list');
 
-Route::get('/user_attendance_list', [TimecardController::class, 'getUserAttendance'])
+Route::get('/user_attendance_list', [AttendanceController::class, 'getUserAttendance'])
     ->name('user_attendance');
 
-Route::get('/user_atte_list', [TimecardController::class, 'getUserAtte'])
+Route::get('/user_atte_list', [AttendanceController::class, 'getUserAtte'])
     ->name('user_atte');

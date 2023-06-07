@@ -22,7 +22,7 @@
             <div class="next-button">
                 <form action="{{ route('attendance') }}" method="get">
                     @csrf
-                        @if($i === $for_dates - 1)
+                        @if($i === $dates_count - 1)
                         <input type="hidden" name="date" value="{{ $dates[$i] }}"/>
                         @else
                             <input type="hidden" name="date" value="{{ $dates[$i + 1] }}"/>

@@ -5,15 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Models\User;
 use App\Models\Attendance;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Validation\ValidationException;
 
 class TimecardController extends Controller
 {
-    public function punchIn()
+    public function startWork()
     {
         // 現在認証しているユーザーを取得
         $user = Auth::user();
@@ -21,15 +18,15 @@ class TimecardController extends Controller
         $old_attendance = Attendance::where('user_id', $user->id)
             ->orderBy('id', 'DESC')->first();
         if ($old_attendance) {
-            $old_attendance_punchIn = new Carbon($old_attendance->start_work);
-            $old_attendance_day = $old_attendance_punchIn->startOfDay();
+            $old_attendance_start = new Carbon($old_attendance->start_work);
+            $old_attendance_day = $old_attendance_start->startOfDay();
         } else {
             $old_attendance_day = null;
         }
 
         $new_attendance_day = Carbon::today();
 
-        // 同日付に、既に出勤打刻している場合エラーを吐き出す。
+        // 同日付に、既に出勤打刻している場合にエラーメッセージを出力
         if (($old_attendance_day == $new_attendance_day)) {
             throw ValidationException::withMessages(['start_work' => '既に出勤打刻がされています']);
             return redirect('/');
@@ -45,15 +42,17 @@ class TimecardController extends Controller
         return redirect('/')->with('message', '出勤打刻が完了しました');
     }
 
-    public function punchOut()
+    public function endWork()
     {
         $user = Auth::user();
         $attendance = Attendance::where('user_id', $user->id)
             ->orderBy('id', 'DESC')->first();
 
+        $end_work = $attendance->end_work;
+        // 出勤打刻していないか、既に退勤打刻している場合にエラーメッセージを出力
         if (empty($attendance->start_work) || !empty($attendance->end_work)) {
             throw ValidationException::withMessages(['end_work' => '既に退勤の打刻がされているか、出勤打刻されていません']);
-            return redirect('/');
+            return redirect('/')->with($end_work);
         }
 
         $end_work_time = Carbon::now();
@@ -62,165 +61,6 @@ class TimecardController extends Controller
         ]);
 
         return redirect('/')->with('message', '退勤打刻が完了しました');
-    }
-
-    public function showTable(Request $request)
-    {
-        $dates= Attendance::groupBy('date')->orderByDesc('date')->pluck('date');
-        // dd($dates);
-        $for_dates = $dates->count();
-        // dd($for_dates);
-
-        if ($request->date) {
-            $date = $request->date;
-            // コレクション$datesで値がリクエストで送られた日付と一致するときのキーを取得
-            $i = $dates->filter(fn($value) => $value == $date)->keys()->first();
-            // dd($i);
-            // $request->session()->flash('date', $date);
-        } else {
-            $now = new Carbon();
-            $i = 0;
-            $date = $now->format('Y-m-d');
-            // dd($date);
-        }
-        // dd($date);
-        $attendance_lists = searchAttendance($date);
-        $rest_lists = searchRest($date);
-        // dd($attendance_lists);
-        // dd($rest_lists);
-
-        if ($attendance_lists) {
-            $per_page = 5;
-            $total_lists = connectCollection($attendance_lists, $rest_lists);
-            // dd($total_lists);
-            // 結果セットCollectionに対してページネーション
-            $total_lists = new LengthAwarePaginator(
-                $total_lists->forPage($request->page, $per_page),
-                count($total_lists),
-                $per_page,
-                $request->page,
-                //  検索結果ページなどパラメーターを引き継ぐ
-                array(
-                    'path' => $request->url('/attendance'),
-                    )
-            );
-            // dd($total_lists);
-            $param = [
-                'items' => $total_lists,
-                'dates' => $dates,
-                'for_dates' => $for_dates,
-                'i' => $i,
-            ];
-            // dd($param);
-        } else {
-            $param = [
-                'items' => null,
-                'dates' => $dates,
-                'for_dates' => $for_dates,
-                'i' => $i,
-            ];
-        }
-
-        // 検索状態を引き継いでページング
-        return view('attendance')->with($param);
-    }
-
-    public function getUserList()
-    {
-        $user_names = User::select('name')->Paginate(5);
-        return view('user_list', compact('user_names'));
-    }
-
-    public function postUserList(Request $request)
-    {
-        $name = $request->name;
-        // dd($name);
-        if($name === null)
-        {
-            return view('user_list');
-        }
-        return redirect()->route('user_atte')->with(compact('name'));
-        // return view('user_atte_list', compact('name'));
-    }
-
-    public function getUserAttendance(Request $request)
-    {
-        $user = Auth::user();
-        if ($request->date) {
-            $date = $request->date;
-            // dd($date);
-            $user_atte_list = searchAttendanceUser($date);
-            // dd($user_atte_list);
-            $user_rest_list = searchRestUser($date);
-        } else {
-            $user_atte_list = searchAttendanceUser();
-            $user_rest_list = searchRestUser();
-        }
-        // dd($user_atte_list);
-        // dd($user_rest_list);
-
-        if ($user_atte_list) {
-            $per_page = 5;
-            $total_lists = connectCollection($user_atte_list, $user_rest_list);
-            // dd($total_lists);
-            $total_lists = new LengthAwarePaginator(
-                $total_lists->forPage($request->page, $per_page),
-                count($total_lists),
-                $per_page,
-                $request->page,
-                array('path' => $request->url()),
-            );
-            // dd($total_lists);
-            $param = [
-                'items' => $total_lists,
-                'name' => $user->name,
-            ];
-        } else {
-            $param = [
-                'items' => null,
-                'name' => null,
-            ];
-        }
-        // dd($param);
-        return view('user_attendance_list', $param);
-    }
-
-    public function getUserAtte(Request $request)
-    {
-        // $name = $request->name;
-        $name = session('name');
-        // dd($name);
-        $request->session()->flash('name', $name);
-
-            $user_atte_list = searchAtteUser($name);
-            $user_rest_list = searchBreakUser($name);
-        // dd($user_atte_list);
-        // dd($user_rest_list);
-
-        if ($user_atte_list) {
-            $per_page = 5;
-            $total_lists = connectCollection($user_atte_list, $user_rest_list);
-            // dd($total_lists);
-            $total_lists = new LengthAwarePaginator(
-                $total_lists->forPage($request->page, $per_page),
-                count($total_lists),
-                $per_page,
-                $request->page,
-                array('path' => $request->url('/user_atte_list')),
-            );
-            // dd($total_lists);
-            $param = [
-                'items' => $total_lists,
-                'name' => $name,
-            ];
-        } else {
-            $param = [
-                'items' => null,
-                'name' => null,
-            ];
-        }
-        // dd($param);
-        return view('user_atte_list', $param);
     }
 
 }

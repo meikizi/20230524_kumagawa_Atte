@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="nav_item">
-                    <a href="{{ route('user_attendance') }}">
+                    <a href="{{ route('user_atte') }}">
                         ユーザー勤怠表
                     </a>
                 </li>

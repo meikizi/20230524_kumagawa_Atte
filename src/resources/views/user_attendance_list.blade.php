@@ -6,25 +6,11 @@
 
 @section('content')
     <div class="database">
-        <div class="attendance-database__date">
+        <div class="database__name">
             @isset($name)
             <h2 class="attendance_list">{{"{$name}の勤務一覧"}}</h2>
-            <form method="get" action="/user_attendance_list">
-                @csrf
-                <laval for="date" class="laval">日付を選択して下さい。</laval>
-                <input type="date" name="date" value="date" id="date" class="input-date">
-                <button type="submit" class="submit-button">検索</button>
-            </form>
             @else
-            <p class="error-date">
-                指定した日付の出退勤はありません
-            </p>
-            <form method="get" action="/user_attendance_list">
-                @csrf
-                <laval for="date" class="date_text">日付を選択して下さい。</laval>
-                <input type="date" name="date" value="date" id="date" class="input__date">
-                <button type="submit" class="submit-button">検索</button>
-            </form>
+            <h2 class="attendance_list__error">このユーザーの勤怠記録はありません</h2>
             @endisset
         </div>
         <div class="database__container">
@@ -36,7 +22,7 @@
                 <p class="database__p">勤務時間</p>
             </div>
             @isset($items)
-            <div class="attendance-database__content">
+            <div class="database__content">
                 @foreach($items as $item)
                 <div class="database__data">
                     <p class="database__p">{{ $item['id_list_att'] }}</p>

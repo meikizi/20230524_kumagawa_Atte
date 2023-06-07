@@ -1,7 +1,7 @@
 @extends('layouts.common')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/timecard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/timecard.css') }}">
 @endsection
 
 @section('content')
@@ -12,13 +12,13 @@
             </div>
             <div class="timecard__inner">
                 <div class="timecard__button">
-                    <form action="{{ route('punchin') }}" method="POST">
+                    <form action="{{ route('start_work') }}" method="POST">
                         @csrf
                         <button class="timecard__submit" type="submit">勤務開始</button>
                     </form>
                 </div>
                 <div class="timecard__button">
-                    <form action="{{ route('punchout') }}" method="POST">
+                    <form action="{{ route('end_work') }}" method="POST">
                         @method('PATCH')
                         @csrf
                         <button class="timecard__submit" type="submit">勤務終了</button>
@@ -42,21 +42,21 @@
             </div>
             <div class="timecard__alert">
                 @if(session('message'))
-                <div class="timecard__alert--success">
-                    {{ session('message') }}
-                </div>
+                    <div class="timecard__alert--success">
+                        {{ session('message') }}
+                    </div>
                 @endif
                 @error('start_work')
-                <p class="error-message">{{ $message }}</p>
+                    <p class="error-message">{{ $message }}</p>
                 @enderror
                 @error('end_work')
-                <p class="error-message">{{ $message }}</p>
+                    <p class="error-message">{{ $message }}</p>
                 @enderror
                 @error('start_rest')
-                <p class="error-message">{{ $message }}</p>
+                    <p class="error-message">{{ $message }}</p>
                 @enderror
                 @error('end_rest')
-                <p class="error-message">{{ $message }}</p>
+                    <p class="error-message">{{ $message }}</p>
                 @enderror
             </div>
         </div>

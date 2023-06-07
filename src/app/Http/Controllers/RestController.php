@@ -20,16 +20,19 @@ class RestController extends Controller
         $rest = Rest::where('user_id', $user_id)
             ->orderBy('id', 'DESC')->first();
 
+        // 出勤打刻していない場合にエラーメッセージを出力
         if (empty($attendance->start_work)) {
             throw ValidationException::withMessages(['start_rest' => '出勤打刻されていません']);
             return redirect('/');
         }
 
+        // 休憩終了打刻してないで、続けて休憩開始打刻した場合にエラーメッセージを出力
         if (!empty($rest->start_rest) && $rest->end_rest === null) {
             throw ValidationException::withMessages(['start_rest' => '休憩終了打刻されていません']);
             return redirect('/');
         }
 
+        // 既に退勤打刻している場合にエラーメッセージを出力
         if (!empty($attendance->end_work)) {
             throw ValidationException::withMessages(['start_rest' => '既に退勤の打刻がされています']);
             return redirect('/');
@@ -50,6 +53,7 @@ class RestController extends Controller
         $rest = Rest::where('user_id', $user_id)
             ->orderBy('id', 'DESC')->first();
 
+        // 既に休憩終了打刻しているか、休憩開始打刻していない場合にエラーメッセージを出力
         if (empty($rest->start_rest) || !empty($rest->end_rest)) {
             throw ValidationException::withMessages(['end_rest' => '既に休憩終了打刻がされているか、休憩開始打刻されていません']);
             return redirect('/');

@@ -36,6 +36,7 @@ PHPのフレームワークLaravelを学ぶために作成しました。
 MySQL 8.0 (RDS)
 
 ## テーブル設計
-https://github.com/meikizi/20230614_kumagawa_atte/issues/2#issue-1752304410
+https://github.com/meikizi/20230614_kumagawa_atte/issues/1#issue-1752301650
 
 ## ER図
+https://github.com/meikizi/20230614_kumagawa_atte/issues/2#issue-1752304410

@@ -14,14 +14,26 @@
                 <div class="timecard__button">
                     <form action="{{ route('start_work') }}" method="POST">
                         @csrf
-                        <button class="timecard__submit" type="submit">勤務開始</button>
+                        @if(session('startWork'))
+                            <button class="timecard__submit" disabled>勤務開始</button>
+                        @else
+                            <button class="timecard__submit">勤務開始</button>
+                        @endif
                     </form>
                 </div>
                 <div class="timecard__button">
                     <form action="{{ route('end_work') }}" method="POST">
                         @method('PATCH')
                         @csrf
-                        <button class="timecard__submit" type="submit">勤務終了</button>
+                        @if(session('startWork'))
+                            @if(session('endWork'))
+                                <button class="timecard__submit" disabled>勤務終了</button>
+                            @else
+                                <button class="timecard__submit">勤務終了</button>
+                            @endif
+                        @else
+                            <button class="timecard__submit" disabled>勤務終了</button>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -29,14 +41,38 @@
                 <div class="timecard__button">
                     <form action="{{ route('start_rest') }}" method="POST">
                         @csrf
-                        <button class="timecard__submit">休憩開始</button>
+                        @if(session('startWork'))
+                            @if(session('endWork'))
+                                <button class="timecard__submit" disabled>休憩開始</button>
+                            @else
+                                @if(session('startRest'))
+                                    <button class="timecard__submit" disabled>休憩開始</button>
+                                @else
+                                    <button class="timecard__submit">休憩開始</button>
+                                @endif
+                            @endif
+                        @else
+                            <button class="timecard__submit" disabled>休憩開始</button>
+                        @endif
                     </form>
                 </div>
                 <div class="timecard__button">
                     <form action="{{ route('end_rest') }}" method="POST">
                         @method('PATCH')
                         @csrf
-                        <button class="timecard__submit">休憩終了</button>
+                        @if(session('startWork'))
+                            @if(session('endWork'))
+                                <button class="timecard__submit" disabled>休憩終了</button>
+                            @else
+                                @if(session('startRest'))
+                                    <button class="timecard__submit">休憩終了</button>
+                                @else
+                                    <button class="timecard__submit" disabled>休憩終了</button>
+                                @endif
+                            @endif
+                        @else
+                            <button class="timecard__submit" disabled>休憩終了</button>
+                        @endif
                     </form>
                 </div>
             </div>

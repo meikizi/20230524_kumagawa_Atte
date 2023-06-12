@@ -26,6 +26,10 @@ class TimecardController extends Controller
 
         $new_attendance_day = Carbon::today();
 
+        if (session()->missing('startWork')) {
+            session(['startWork' => 'exist']);
+        }
+
         // 同日付に、既に出勤打刻している場合にエラーメッセージを出力
         if (($old_attendance_day == $new_attendance_day)) {
             throw ValidationException::withMessages(['start_work' => '既に出勤打刻がされています']);
@@ -33,6 +37,7 @@ class TimecardController extends Controller
         }
 
         $start_work_time = Carbon::now();
+
         Attendance::create([
             'user_id' => $user->id,
             'date' => $start_work_time->format('Y-m-d'),
@@ -48,14 +53,19 @@ class TimecardController extends Controller
         $attendance = Attendance::where('user_id', $user->id)
             ->orderBy('id', 'DESC')->first();
 
-        $end_work = $attendance->end_work;
+        if (session()->missing('endWork')) {
+            session(['endWork' => 'exist']);
+        }
+
         // 出勤打刻していないか、既に退勤打刻している場合にエラーメッセージを出力
         if (empty($attendance->start_work) || !empty($attendance->end_work)) {
             throw ValidationException::withMessages(['end_work' => '既に退勤の打刻がされているか、出勤打刻されていません']);
-            return redirect('/')->with($end_work);
+            return redirect('/');
         }
 
         $end_work_time = Carbon::now();
+
+
         $attendance->update([
             'end_work' => $end_work_time->format('Y-m-d H:i:s')
         ]);

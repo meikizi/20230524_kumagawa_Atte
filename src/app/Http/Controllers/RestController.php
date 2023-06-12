@@ -20,6 +20,14 @@ class RestController extends Controller
         $rest = Rest::where('user_id', $user_id)
             ->orderBy('id', 'DESC')->first();
 
+        if (session()->missing('startRest')) {
+            session(['startRest' => 'exist']);
+        }
+
+        if (session()->has('endRest')) {
+            session()->forget('endRest');
+        }
+
         // 出勤打刻していない場合にエラーメッセージを出力
         if (empty($attendance->start_work)) {
             throw ValidationException::withMessages(['start_rest' => '出勤打刻されていません']);
@@ -39,6 +47,7 @@ class RestController extends Controller
         }
 
         $start_rest_time = Carbon::now();
+
         Rest::create([
             'user_id' => $user_id,
             'date' => $start_rest_time->format('Y-m-d'),
@@ -53,6 +62,14 @@ class RestController extends Controller
         $rest = Rest::where('user_id', $user_id)
             ->orderBy('id', 'DESC')->first();
 
+        if (session()->missing('endRest')) {
+            session(['endRest' => 'exist']);
+        }
+
+        if (session()->has('startRest')) {
+            session()->forget('startRest');
+        }
+
         // 既に休憩終了打刻しているか、休憩開始打刻していない場合にエラーメッセージを出力
         if (empty($rest->start_rest) || !empty($rest->end_rest)) {
             throw ValidationException::withMessages(['end_rest' => '既に休憩終了打刻がされているか、休憩開始打刻されていません']);
@@ -60,6 +77,7 @@ class RestController extends Controller
         }
 
         $end_rest_time = Carbon::now();
+
         $rest->update([
             'end_rest' => $end_rest_time->format('Y-m-d H:i:s')
         ]);

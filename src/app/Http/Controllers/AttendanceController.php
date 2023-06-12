@@ -11,6 +11,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class AttendanceController extends Controller
 {
+    /**
+     * 日付別勤怠情報一覧
+     */
     public function DailyAttendance(Request $request)
     {
         $dates = Attendance::groupBy('date')->orderByDesc('date')->pluck('date');
@@ -65,12 +68,18 @@ class AttendanceController extends Controller
         return view('attendance')->with($param);
     }
 
+    /**
+     * ユーザー一覧
+     */
     public function getUserList()
     {
         $user_names = User::select('name')->Paginate(5);
         return view('user_list', compact('user_names'));
     }
 
+    /**
+     * ユーザー一覧
+     */
     public function postUserList(Request $request)
     {
         $name = $request->name;
@@ -81,6 +90,9 @@ class AttendanceController extends Controller
         return redirect()->route('user_attendance')->with(compact('name'));
     }
 
+    /**
+     * ユーザー別勤怠情報一覧
+     */
     public function getUserAttendance(Request $request)
     {
         $name = session('name');
@@ -115,6 +127,9 @@ class AttendanceController extends Controller
         return view('user_attendance_list', $param);
     }
 
+    /**
+     * ログイン中のユーザーの勤怠表
+     */
     public function getUserAtte(Request $request)
     {
         $user = Auth::user();

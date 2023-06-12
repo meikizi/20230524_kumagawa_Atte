@@ -47,12 +47,14 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            // 'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required', 'string', 'email', 'max:191', 'unique:users'],
+            'password' => ['required', 'string','min:8', 'max:191', 'confirmed'],
         ]);
     }
 
+    /**
+     * 仮会員登録内容確認
+     */
     public function pre_check(Request $request)
     {
         $this->validator($request->all())->validate();
@@ -66,6 +68,9 @@ class RegisterController extends Controller
         return view('auth.pre_register_check')->with($login_data);
     }
 
+    /**
+     * 仮会員登録データの追加、仮登録確認メールの処理
+     */
     protected function create(array $data)
     {
         $user = User::create([
@@ -82,6 +87,9 @@ class RegisterController extends Controller
         return $user;
     }
 
+    /**
+     * 仮会員登録完了
+     */
     public function register(Request $request)
     {
         // DB登録したユーザーを設定
@@ -90,6 +98,9 @@ class RegisterController extends Controller
         return view('auth.pre_registered');
     }
 
+    /**
+     * 本会員登録フォーム
+     */
     public function showForm($email_token)
     {
         // 使用可能なトークンか
@@ -116,10 +127,13 @@ class RegisterController extends Controller
         }
     }
 
+    /**
+     * 本会員登録内容確認
+     */
     public function mainCheck(Request $request, $email_token)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:191'],
         ]);
 
         $user = new User();
@@ -128,6 +142,9 @@ class RegisterController extends Controller
         return view('auth.main.register_check', compact('user', 'email_token'));
     }
 
+    /**
+     * 本会員登録完了
+     */
     public function mainRegister(Request $request, $email_token)
     {
         $user = User::where('email_verify_token', $email_token)->first();

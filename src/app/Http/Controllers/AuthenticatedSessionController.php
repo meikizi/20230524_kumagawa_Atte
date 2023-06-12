@@ -11,11 +11,13 @@ class AuthenticatedSessionController extends Controller
     {
         // セッションIDの再生成、セッション固定攻撃対策
         $request->session()->regenerate();
+        // CSRF トークンを再生成して、二重送信対策
+        $request->session()->regenerateToken();
 
-        if (! Auth::user()) {
-            return view('auth/login');
-        } else {
+        if (Auth::check()) {
             return redirect('/')->route('timecard');
+        } else {
+            return view('auth/login');
         }
     }
 

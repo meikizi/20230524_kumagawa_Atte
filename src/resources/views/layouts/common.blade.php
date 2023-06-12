@@ -32,11 +32,11 @@
                         ユーザー一覧
                     </a>
                 </li>
-                <li class="nav_item">
+                {{-- <li class="nav_item">
                     <a href="{{ route('user_atte') }}">
                         ユーザー勤怠表
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav_item">
                     <a href="{{ route('logout') }}">
                         ログアウト

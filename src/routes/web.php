@@ -60,5 +60,5 @@ Route::post('/user_list', [AttendanceController::class, 'postUserList'])
 Route::get('/user_attendance_list', [AttendanceController::class, 'getUserAttendance'])
     ->name('user_attendance');
 
-Route::get('/user_atte_list', [AttendanceController::class, 'getUserAtte'])
-    ->name('user_atte');
+// Route::get('/user_atte_list', [AttendanceController::class, 'getUserAtte'])
+//     ->name('user_atte');

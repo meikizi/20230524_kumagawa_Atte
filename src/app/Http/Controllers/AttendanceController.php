@@ -130,38 +130,38 @@ class AttendanceController extends Controller
     /**
      * ログイン中のユーザーの勤怠表
      */
-    public function getUserAtte(Request $request)
-    {
-        $user = Auth::user();
-        if ($request->date) {
-            $date = $request->date;
-            $user_atte_list = searchAtteUser($date);
-            $user_rest_list = searchBreakUser($date);
-        } else {
-            $user_atte_list = searchAtteUser();
-            $user_rest_list = searchBreakUser();
-        }
+    // public function getUserAtte(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     if ($request->date) {
+    //         $date = $request->date;
+    //         $user_atte_list = searchAtteUser($date);
+    //         $user_rest_list = searchBreakUser($date);
+    //     } else {
+    //         $user_atte_list = searchAtteUser();
+    //         $user_rest_list = searchBreakUser();
+    //     }
 
-        if ($user_atte_list) {
-            $per_page = 5;
-            $total_lists = connectCollection($user_atte_list, $user_rest_list);
-            $total_lists = new LengthAwarePaginator(
-                $total_lists->forPage($request->page, $per_page),
-                count($total_lists),
-                $per_page,
-                $request->page,
-                array('path' => $request->url()),
-            );
-            $param = [
-                'items' => $total_lists,
-                'name' => $user->name,
-            ];
-        } else {
-            $param = [
-                'items' => null,
-                'name' => null,
-            ];
-        }
-        return view('user_atte_list', $param);
-    }
+    //     if ($user_atte_list) {
+    //         $per_page = 5;
+    //         $total_lists = connectCollection($user_atte_list, $user_rest_list);
+    //         $total_lists = new LengthAwarePaginator(
+    //             $total_lists->forPage($request->page, $per_page),
+    //             count($total_lists),
+    //             $per_page,
+    //             $request->page,
+    //             array('path' => $request->url()),
+    //         );
+    //         $param = [
+    //             'items' => $total_lists,
+    //             'name' => $user->name,
+    //         ];
+    //     } else {
+    //         $param = [
+    //             'items' => null,
+    //             'name' => null,
+    //         ];
+    //     }
+    //     return view('user_atte_list', $param);
+    // }
 }

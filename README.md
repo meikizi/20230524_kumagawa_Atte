@@ -20,6 +20,7 @@ https://github.com/meikizi/20230614_kumagawa_atte/issues/3#issue-1752337262
 PHPのフレームワークLaravelを学ぶために作成しました。
 
 ## アプリケーションURL
+URL: 52.194.241.146
 
 ## 機能一覧
 ・　会員登録とメールによる二段階認証

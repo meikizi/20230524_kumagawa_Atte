@@ -17,7 +17,7 @@ LaravelのAuth認証機能を利用し、メールによる二段階認証を行
 https://github.com/meikizi/20230614_kumagawa_atte/issues/3#issue-1752337262
 
 ## 作成した目的
-PHPのフレームワークLaravelを学ぶために作成しました。
+模擬案件を通して実践に近い開発経験をつむために作成しました。
 
 ## アプリケーションURL
 URL: 52.194.241.146
